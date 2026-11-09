@@ -232,6 +232,12 @@ ros2 launch couv_map_merge aruco_viz.launch.py mode:=cycle                      
 
 ## 데이터 위치
 
+`maps/`는 용량 때문에 git에 넣지 않고 [Release `maps-20261028`](https://github.com/esjjj9178/uav-ugv-coop-slam/releases/tag/maps-20261028)에 올려 두었다.
+
+```bash
+cd ~/ros2_ws && gh release download maps-20261028 -R esjjj9178/uav-ugv-coop-slam && tar xzf maps.tar.gz
+```
+
 | 경로 | 내용 | 크기 |
 |---|---|---|
 | `maps/couv_20261027_200102_pitch90/` | 3단계 결과(ply, poses, `aux_bag`(정답·거리센서), `merge_result.yaml`). DB와 원본 bag은 삭제 | 24 MB |
