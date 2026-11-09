@@ -1,0 +1,47 @@
+# Test mission for repeatable data collection (simulation only).
+# mission_runner.py follows these waypoints using the GROUND-TRUTH pose
+# (/<robot>/ground_truth/odom). It is not a SLAM input. Coordinates are in `map`
+# (= canopy_world origin); see couv_sim_world README for the layout.
+
+start_delay: 3.0               # [s sim] wait after both ground-truth topics are alive
+
+drone:
+  takeoff_altitude: 5.0        # [m] map z of drone/base_link
+  takeoff_speed: 0.5           # [m/s] vertical
+  hover_before_ugv: 3.0        # [s] hover at altitude before the UGV starts
+  max_speed: 0.8               # [m/s] horizontal + vertical norm
+  max_accel: 0.5               # [m/s^2] command slew limit (limits tilt -> motion blur)
+  max_yaw_rate: 0.2            # [rad/s]
+  yaw: 0.0                     # [rad] heading held during the whole flight
+  kp_xy: 0.6
+  kp_z: 0.8
+  kp_yaw: 0.8
+  tolerance: 0.25              # [m] waypoint reached
+  # Over the roof: AC unit (-2, -1.2) then water tank (2, 1.2), roof top z = 3.2.
+  # Starts when the UGV starts.
+  waypoints:
+    - [-4.5, -1.2, 5.0]
+    - [-2.0, -1.2, 5.0]        # above the AC unit
+    - [ 0.0,  0.0, 5.0]
+    - [ 2.0,  1.2, 5.0]        # above the water tank
+    - [ 4.5,  1.2, 5.0]
+    - [ 7.0,  0.0, 5.0]        # above the goal
+
+ugv:
+  max_speed: 0.4               # [m/s]
+  max_yaw_rate: 0.35           # [rad/s]
+  max_accel: 0.4               # [m/s^2]
+  kp_lin: 0.8
+  kp_yaw: 1.5
+  slow_down_heading: 0.5       # [rad] heading error above which the UGV turns on the spot
+  tolerance: 0.15              # [m] waypoint reached
+  # couv_sim_world recommended route: south of the crate stack, north of the drum
+  waypoints:
+    - [-4.5, 0.0]
+    - [-1.5, -0.3]
+    - [ 1.8, 0.4]
+    - [ 4.5, 0.0]
+    - [ 7.0, 0.0]
+
+done_hold: 3.0                 # [s] both robots hold still before "MISSION COMPLETE"
+timeout: 400.0                 # [s sim] abort (stop both) if not finished

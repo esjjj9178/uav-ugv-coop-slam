@@ -1,0 +1,160 @@
+Panels:
+  - Class: rviz_common/Displays
+    Help Height: 0
+    Name: Displays
+    Property Tree Widget:
+      Expanded: ~
+      Splitter Ratio: 0.55
+    Tree Height: 400
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Class: rviz_default_plugins/Grid
+      Name: Grid (map, 1 m)
+      Enabled: true
+      Reference Frame: map
+      Cell Size: 1
+      Plane Cell Count: 20
+      Color: 160; 160; 164
+      Alpha: 0.4
+      Value: true
+    - Class: rviz_default_plugins/RobotModel
+      Name: UGV (ground truth)
+      Enabled: true
+      Description Source: Topic
+      Description Topic:
+        Value: /ugv/robot_description
+        Depth: 1
+        Durability Policy: Transient Local
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+      TF Prefix: gt/ugv
+      Visual Enabled: true
+      Collision Enabled: false
+      Alpha: 1
+      Value: true
+    - Class: rviz_default_plugins/RobotModel
+      Name: Drone (ground truth)
+      Enabled: true
+      Description Source: Topic
+      Description Topic:
+        Value: /drone/robot_description
+        Depth: 1
+        Durability Policy: Transient Local
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+      TF Prefix: gt/drone
+      Visual Enabled: true
+      Collision Enabled: false
+      Alpha: 1
+      Value: true
+    - Class: rviz_default_plugins/PointCloud2
+      Name: UGV D435 cloud
+      Enabled: true
+      Topic:
+        Value: /viz/ugv/points
+        Depth: 2
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+      Color Transformer: RGB8
+      Style: Points
+      Size (Pixels): 3
+      Size (m): 0.02
+      Alpha: 1
+      Decay Time: 0
+      Queue Size: 2
+      Use Fixed Frame: true
+      Value: true
+    - Class: rviz_default_plugins/PointCloud2
+      Name: Drone D435 cloud
+      Enabled: true
+      Topic:
+        Value: /viz/drone/points
+        Depth: 2
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+      Color Transformer: RGB8
+      Style: Points
+      Size (Pixels): 3
+      Size (m): 0.02
+      Alpha: 1
+      Decay Time: 0
+      Queue Size: 2
+      Use Fixed Frame: true
+      Value: true
+    - Class: rviz_default_plugins/TF
+      Name: TF (gt)
+      Enabled: false
+      Show Arrows: false
+      Show Axes: true
+      Show Names: false
+      Marker Scale: 0.5
+      Value: false
+    - Class: rviz_default_plugins/Image
+      Name: Drone color
+      Enabled: true
+      Topic:
+        Value: /drone/camera/color/image_raw
+        Depth: 1
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Best Effort
+      Normalize Range: true
+      Value: true
+    - Class: rviz_default_plugins/Image
+      Name: UGV color
+      Enabled: true
+      Topic:
+        Value: /ugv/camera/color/image_raw
+        Depth: 1
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Best Effort
+      Normalize Range: true
+      Value: true
+  Enabled: true
+  Global Options:
+    Background Color: 48; 48; 52
+    Fixed Frame: map
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz_default_plugins/Interact
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Select
+    - Class: rviz_default_plugins/FocusCamera
+    - Class: rviz_default_plugins/Measure
+  Transformation:
+    Current:
+      Class: rviz_default_plugins/TF
+  Value: true
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+      Name: Current View
+      Target Frame: map
+      Focal Point:
+        X: -1
+        Y: 0
+        Z: 1.5
+      Distance: 11
+      Pitch: 0.5
+      Yaw: 3.6
+      Near Clip Distance: 0.01
+      Value: Orbit (rviz)
+    Saved: ~
+Window Geometry:
+  Displays:
+    collapsed: false
+  Height: 1000
+  Width: 1600
+  X: 0
+  Y: 0
+  Drone color:
+    collapsed: false
+  UGV color:
+    collapsed: false
+  Hide Left Dock: false
+  Hide Right Dock: false

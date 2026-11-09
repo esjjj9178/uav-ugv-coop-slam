@@ -1,0 +1,176 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <model name="canopy">
+    <static>true</static>
+    <link name="link">
+      <collision name="roof_body_collision">
+        <pose>0 0 3.075 0 0 0</pose>
+        <geometry><box><size>8 6 0.15</size></box></geometry>
+      </collision>
+      <visual name="roof_body_visual">
+        <pose>0 0 3.075 0 0 0</pose>
+        <geometry><box><size>8 6 0.15</size></box></geometry>
+        <cast_shadows>true</cast_shadows>
+        <material>
+          <ambient>0.5195 0.5185 0.5139 1</ambient>
+          <diffuse>0.8659 0.8642 0.8564 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://canopy/materials/textures/roof_underside.png</albedo_map>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+      <collision name="roof_gravel_collision">
+        <pose>0 0 3.175 0 0 0</pose>
+        <geometry><box><size>8 6 0.05</size></box></geometry>
+      </collision>
+      <visual name="roof_gravel_visual">
+        <pose>0 0 3.175 0 0 0</pose>
+        <geometry><box><size>8 6 0.05</size></box></geometry>
+        <cast_shadows>true</cast_shadows>
+        <material>
+          <ambient>0.5183 0.5154 0.5098 1</ambient>
+          <diffuse>0.8638 0.8591 0.8497 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://canopy/materials/textures/roof_gravel.png</albedo_map>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+      <collision name="pillar_0_collision">
+        <pose>-3.85 -2.85 1.5 0 0 0</pose>
+        <geometry><box><size>0.3 0.3 3</size></box></geometry>
+      </collision>
+      <visual name="pillar_0_visual">
+        <pose>-3.85 -2.85 1.5 0 0 0</pose>
+        <geometry><box><size>0.3 0.3 3</size></box></geometry>
+        <cast_shadows>true</cast_shadows>
+        <material>
+          <ambient>0.5073 0.5052 0.5023 1</ambient>
+          <diffuse>0.8456 0.8419 0.8371 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://canopy/materials/textures/pillar_0.png</albedo_map>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+      <collision name="pillar_1_collision">
+        <pose>0 -2.85 1.5 0 0 0</pose>
+        <geometry><box><size>0.3 0.3 3</size></box></geometry>
+      </collision>
+      <visual name="pillar_1_visual">
+        <pose>0 -2.85 1.5 0 0 0</pose>
+        <geometry><box><size>0.3 0.3 3</size></box></geometry>
+        <cast_shadows>true</cast_shadows>
+        <material>
+          <ambient>0.5118 0.5098 0.5068 1</ambient>
+          <diffuse>0.8531 0.8497 0.8447 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://canopy/materials/textures/pillar_1.png</albedo_map>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+      <collision name="pillar_2_collision">
+        <pose>3.85 -2.85 1.5 0 0 0</pose>
+        <geometry><box><size>0.3 0.3 3</size></box></geometry>
+      </collision>
+      <visual name="pillar_2_visual">
+        <pose>3.85 -2.85 1.5 0 0 0</pose>
+        <geometry><box><size>0.3 0.3 3</size></box></geometry>
+        <cast_shadows>true</cast_shadows>
+        <material>
+          <ambient>0.516 0.5142 0.5113 1</ambient>
+          <diffuse>0.86 0.8571 0.8522 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://canopy/materials/textures/pillar_2.png</albedo_map>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+      <collision name="pillar_3_collision">
+        <pose>-3.85 2.85 1.5 0 0 0</pose>
+        <geometry><box><size>0.3 0.3 3</size></box></geometry>
+      </collision>
+      <visual name="pillar_3_visual">
+        <pose>-3.85 2.85 1.5 0 0 0</pose>
+        <geometry><box><size>0.3 0.3 3</size></box></geometry>
+        <cast_shadows>true</cast_shadows>
+        <material>
+          <ambient>0.5225 0.5207 0.5177 1</ambient>
+          <diffuse>0.8708 0.8678 0.8629 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://canopy/materials/textures/pillar_3.png</albedo_map>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+      <collision name="pillar_4_collision">
+        <pose>0 2.85 1.5 0 0 0</pose>
+        <geometry><box><size>0.3 0.3 3</size></box></geometry>
+      </collision>
+      <visual name="pillar_4_visual">
+        <pose>0 2.85 1.5 0 0 0</pose>
+        <geometry><box><size>0.3 0.3 3</size></box></geometry>
+        <cast_shadows>true</cast_shadows>
+        <material>
+          <ambient>0.5324 0.5305 0.527 1</ambient>
+          <diffuse>0.8874 0.8842 0.8783 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://canopy/materials/textures/pillar_4.png</albedo_map>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+      <collision name="pillar_5_collision">
+        <pose>3.85 2.85 1.5 0 0 0</pose>
+        <geometry><box><size>0.3 0.3 3</size></box></geometry>
+      </collision>
+      <visual name="pillar_5_visual">
+        <pose>3.85 2.85 1.5 0 0 0</pose>
+        <geometry><box><size>0.3 0.3 3</size></box></geometry>
+        <cast_shadows>true</cast_shadows>
+        <material>
+          <ambient>0.5366 0.5349 0.5315 1</ambient>
+          <diffuse>0.8943 0.8915 0.8858 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://canopy/materials/textures/pillar_5.png</albedo_map>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>

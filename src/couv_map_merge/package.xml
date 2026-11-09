@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>couv_map_merge</name>
+  <version>0.1.0</version>
+  <description>Per-robot RTAB-Map from couv_sim_robots bags and UGV/UAV map registration (T0 initial guess + ICP) with RViz playback.</description>
+  <maintainer email="kmh9178@inha.edu">eom</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>ament_cmake_python</buildtool_depend>
+
+  <exec_depend>couv_sim_robots</exec_depend>
+  <exec_depend>couv_sim_world</exec_depend>
+  <exec_depend>rtabmap_odom</exec_depend>
+  <exec_depend>rtabmap_slam</exec_depend>
+  <exec_depend>image_transport</exec_depend>
+  <exec_depend>image_transport_plugins</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>ros2bag</exec_depend>
+  <exec_depend>rosbag2_py</exec_depend>
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>sensor_msgs_py</exec_depend>
+  <exec_depend>visualization_msgs</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+  <exec_depend>rviz2</exec_depend>
+  <exec_depend>python3-numpy</exec_depend>
+  <exec_depend>python3-scipy</exec_depend>
+  <exec_depend>python3-yaml</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

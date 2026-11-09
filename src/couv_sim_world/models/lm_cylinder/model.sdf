@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <model name="lm_cylinder">
+    <static>true</static>
+    <link name="link">
+      <collision name="body_collision">
+        <pose>0 0 1 0 0 0</pose>
+        <geometry><cylinder><radius>0.4</radius><length>2</length></cylinder></geometry>
+      </collision>
+      <visual name="body_visual">
+        <pose>0 0 1 0 0 0</pose>
+        <geometry><cylinder><radius>0.4</radius><length>2</length></cylinder></geometry>
+        <cast_shadows>true</cast_shadows>
+        <material>
+          <ambient>0.5289 0.5148 0.5113 1</ambient>
+          <diffuse>0.8815 0.858 0.8522 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://lm_cylinder/materials/textures/lm_cylinder.png</albedo_map>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>

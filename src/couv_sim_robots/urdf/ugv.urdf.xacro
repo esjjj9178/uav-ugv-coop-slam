@@ -1,0 +1,160 @@
+<?xml version="1.0"?>
+<!--
+  Leo Rover sized 4-wheel skid-steer UGV with a landing pad on top and a front D435.
+  All numbers come from config/frames.yaml (section `ugv`, `d435`); xacro args override a few.
+  Link names are unprefixed; robot_state_publisher adds the `ugv/` frame_prefix.
+  base_link = vehicle centre on the axle line (wheel_radius above the ground).
+-->
+<robot name="ugv" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:include filename="$(find couv_sim_robots)/urdf/common.xacro"/>
+  <xacro:include filename="$(find couv_sim_robots)/urdf/d435.xacro"/>
+
+  <xacro:arg name="cam_height" default=""/>
+  <xacro:arg name="depth_noise_stddev" default=""/>
+
+  <xacro:property name="u" value="${cfg.ugv}"/>
+  <xacro:property name="cam" value="${cfg.d435}"/>
+  <xacro:property name="ns" value="${u.name}"/>
+  <xacro:property name="wr" value="${u.wheel_radius}"/>
+  <xacro:property name="ch" value="${u.chassis}"/>
+  <xacro:property name="pad" value="${u.landing_pad}"/>
+  <xacro:property name="cam_height" value="${u.camera.height if '$(arg cam_height)' == '' else float('$(arg cam_height)')}"/>
+  <xacro:property name="depth_noise" value="${cam.depth_noise_stddev if '$(arg depth_noise_stddev)' == '' else float('$(arg depth_noise_stddev)')}"/>
+  <xacro:property name="pad_z" value="${pad.top_height - wr - pad.thickness/2}"/>
+  <xacro:property name="chassis_top" value="${ch.z + ch.height/2}"/>
+  <xacro:property name="mast_h" value="${pad_z - pad.thickness/2 - chassis_top}"/>
+
+  <material name="ugv_body"><color rgba="0.85 0.45 0.10 1"/></material>
+  <material name="ugv_dark"><color rgba="0.12 0.12 0.13 1"/></material>
+  <material name="ugv_white"><color rgba="0.9 0.9 0.9 1"/></material>
+
+  <link name="base_link"/>
+
+  <joint name="base_footprint_joint" type="fixed">
+    <parent link="base_link"/><child link="base_footprint"/>
+    <origin xyz="0 0 ${-wr}" rpy="0 0 0"/>
+  </joint>
+  <link name="base_footprint"/>
+
+  <joint name="chassis_joint" type="fixed">
+    <parent link="base_link"/><child link="chassis"/>
+    <origin xyz="0 0 ${ch.z}" rpy="0 0 0"/>
+  </joint>
+  <link name="chassis">
+    <visual>
+      <geometry><box size="${ch.length} ${ch.width} ${ch.height}"/></geometry>
+      <material name="ugv_body"/>
+    </visual>
+    <collision>
+      <geometry><box size="${ch.length} ${ch.width} ${ch.height}"/></geometry>
+    </collision>
+    <xacro:box_inertial m="${ch.mass}" x="${ch.length}" y="${ch.width}" z="${ch.height}"/>
+  </link>
+
+  <!-- landing pad (ArUco goes here later) on a short mast -->
+  <joint name="landing_pad_joint" type="fixed">
+    <parent link="base_link"/><child link="landing_pad"/>
+    <origin xyz="0 0 ${pad_z}" rpy="0 0 0"/>
+  </joint>
+  <link name="landing_pad">
+    <visual>
+      <geometry>
+        <mesh filename="package://couv_sim_robots/meshes/landing_pad.obj"
+              scale="${pad.size_x} ${pad.size_y} ${pad.thickness}"/>
+      </geometry>
+    </visual>
+    <visual>
+      <origin xyz="0 0 ${-pad.thickness/2 - mast_h/2}" rpy="0 0 0"/>
+      <geometry><box size="0.2 0.2 ${mast_h}"/></geometry>
+      <material name="ugv_dark"/>
+    </visual>
+    <collision>
+      <geometry><box size="${pad.size_x} ${pad.size_y} ${pad.thickness}"/></geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 0 ${-pad.thickness/2 - mast_h/2}" rpy="0 0 0"/>
+      <geometry><box size="0.2 0.2 ${mast_h}"/></geometry>
+    </collision>
+    <xacro:box_inertial m="${pad.mass}" x="${pad.size_x}" y="${pad.size_y}" z="${pad.thickness}"/>
+  </link>
+  <gazebo reference="landing_pad">
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+  </gazebo>
+
+  <xacro:macro name="wheel" params="name x y">
+    <joint name="${name}_joint" type="continuous">
+      <parent link="base_link"/><child link="${name}"/>
+      <origin xyz="${x} ${y} 0" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+    </joint>
+    <link name="${name}">
+      <visual>
+        <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
+        <geometry><cylinder radius="${wr}" length="${u.wheel_width}"/></geometry>
+        <material name="ugv_dark"/>
+      </visual>
+      <visual>
+        <origin xyz="0 ${0.5*u.wheel_width*(1 if y > 0 else -1)} 0" rpy="${pi/2} 0 0"/>
+        <geometry><box size="${wr} ${wr*0.3} 0.004"/></geometry>
+        <material name="ugv_white"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
+        <geometry><cylinder radius="${wr}" length="${u.wheel_width}"/></geometry>
+      </collision>
+      <inertial>
+        <mass value="${u.wheel_mass}"/>
+        <inertia ixx="${u.wheel_mass*(3*wr*wr+u.wheel_width**2)/12}" ixy="0" ixz="0"
+                 iyy="${u.wheel_mass*wr*wr/2}" iyz="0" izz="${u.wheel_mass*(3*wr*wr+u.wheel_width**2)/12}"/>
+      </inertial>
+    </link>
+    <!-- Isotropic friction: with mu1 != mu2 the friction directions are fixed in the world (fdir1 is
+         ignored by gz-physics dartsim), so skid-steer turning on the spot failed at headings near +-90 deg. -->
+    <gazebo reference="${name}">
+      <mu1>0.6</mu1>
+      <mu2>0.6</mu2>
+    </gazebo>
+  </xacro:macro>
+  <xacro:wheel name="wheel_fl" x="${u.wheelbase/2}" y="${u.track/2}"/>
+  <xacro:wheel name="wheel_rl" x="${-u.wheelbase/2}" y="${u.track/2}"/>
+  <xacro:wheel name="wheel_fr" x="${u.wheelbase/2}" y="${-u.track/2}"/>
+  <xacro:wheel name="wheel_rr" x="${-u.wheelbase/2}" y="${-u.track/2}"/>
+
+  <!-- front D435 -->
+  <xacro:d435 parent="base_link" ns="${ns}" frame_prefix="${ns}/"
+              xyz="${u.camera.x} ${u.camera.y} ${cam_height - wr}"
+              rpy="0 ${radians(u.camera.pitch_deg)} 0"
+              width="${cam.width}" height="${cam.height}" rate="${cam.rate}" hfov="${cam.hfov}"
+              near="${cam.near}" far="${cam.far}" color_far="${cam.color_far}" depth_noise_stddev="${depth_noise}" imu_rate="${cam.imu_rate}"/>
+  <joint name="camera_mount_joint" type="fixed">
+    <parent link="base_link"/><child link="camera_mount"/>
+    <origin xyz="${u.camera.x - 0.0125} ${u.camera.y} ${(cam_height - wr - 0.0125 + chassis_top)/2}" rpy="0 0 0"/>
+  </joint>
+  <link name="camera_mount">
+    <visual>
+      <geometry><box size="0.02 0.03 ${cam_height - wr - 0.0125 - chassis_top}"/></geometry>
+      <material name="ugv_dark"/>
+    </visual>
+  </link>
+
+  <gazebo>
+    <plugin filename="gz-sim-diff-drive-system" name="gz::sim::systems::DiffDrive">
+      <left_joint>wheel_fl_joint</left_joint>
+      <left_joint>wheel_rl_joint</left_joint>
+      <right_joint>wheel_fr_joint</right_joint>
+      <right_joint>wheel_rr_joint</right_joint>
+      <wheel_separation>${u.track}</wheel_separation>
+      <wheel_radius>${wr}</wheel_radius>
+      <max_linear_velocity>${u.max_wheel_speed}</max_linear_velocity>
+      <min_linear_velocity>${-u.max_wheel_speed}</min_linear_velocity>
+      <topic>/${ns}/cmd_vel</topic>
+      <odom_topic>/${ns}/odom</odom_topic>
+      <tf_topic>/${ns}/tf</tf_topic>
+      <frame_id>${ns}/odom</frame_id>
+      <child_frame_id>${ns}/base_link</child_frame_id>
+      <odom_publisher_frequency>${u.odom_rate}</odom_publisher_frequency>
+    </plugin>
+  </gazebo>
+  <xacro:ground_truth ns="${ns}"/>
+</robot>

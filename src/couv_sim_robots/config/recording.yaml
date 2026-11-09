@@ -1,0 +1,50 @@
+# Recording configuration (record.sh) and image compression (sim.launch.py `compress:=true`).
+#
+# Raw RGB-D at 2 robots x 30 Hz is ~130 MB per simulated second (colour 0.92 MB +
+# 32FC1 depth 1.23 MB per frame), i.e. ~8 GB for one mission. The default profile
+# therefore records the image_transport compressed streams (what realsense2_camera also
+# offers): colour as JPEG, depth as compressedDepth (PNG of quantised inverse depth).
+# RTAB-Map can subscribe to these directly (image_transport compressed/compressedDepth),
+# or `ros2 run image_transport republish` restores raw topics during playback.
+
+compression:
+  jpeg_quality: 95
+  png_level: 3              # compressedDepth PNG level (9 is too slow for 30 Hz)
+  depth_max: 10.0           # [m] compressedDepth quantisation range (= D435 far clip)
+  depth_quantization: 100.0
+
+output_dir: ~/ros2_ws/bags
+storage: mcap               # falls back to sqlite3 when rosbag2_storage_mcap is missing
+storage_preset: zstd_fast   # mcap chunk compression
+
+common_topics:
+  - /clock
+  - /tf
+  - /tf_static
+  - /mission/state
+
+robot_topics:               # recorded for every robot below; {ns} = robot name
+  always:
+    - /{ns}/camera/color/camera_info
+    - /{ns}/camera/depth/camera_info
+    - /{ns}/camera/imu
+    - /{ns}/cmd_vel
+    - /{ns}/ground_truth/odom
+    - /{ns}/joint_states
+  compressed:               # default profile
+    - /{ns}/camera/color/image_raw/compressed
+    - /{ns}/camera/depth/image_rect_raw/compressedDepth
+  raw:                      # record.sh --raw
+    - /{ns}/camera/color/image_raw
+    - /{ns}/camera/depth/image_rect_raw
+  points:                   # record.sh --points (very large, can be regenerated from depth)
+    - /{ns}/camera/depth/color/points
+
+robots:
+  ugv:
+    - /ugv/odom
+  drone:
+    - /drone/imu
+    - /drone/air_pressure
+    - /drone/rangefinder
+    - /drone/enable

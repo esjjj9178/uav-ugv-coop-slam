@@ -1,0 +1,89 @@
+# Single source of geometry, mounting and spawn values for couv_sim_robots.
+# sim.launch.py reads this file, passes the values to the xacro files as arguments,
+# and computes the spawn poses from it. Units: m, rad unless the key says *_deg.
+#
+# Conventions (REP-103/105): x forward, y left, z up. Every frame is prefixed with the
+# robot namespace (ugv/..., drone/...). The common world frame is `map` = Gazebo world
+# origin of canopy_world (map centre), NOT the UGV start point.
+
+world:
+  name: canopy_world
+  map_frame: map
+
+ugv:
+  name: ugv
+  # Pose of ugv/base_footprint (ground under the vehicle centre) in map.
+  # The UGV start point is therefore map (-7, 0, 0), facing +x.
+  spawn: {x: -7.0, y: 0.0, z: 0.0, yaw: 0.0}
+  spawn_clearance: 0.01          # dropped from this height above the ground at spawn
+  # Leo Rover sized 4-wheel skid-steer (approx. 0.45 x 0.43 x 0.25 m overall)
+  wheel_radius: 0.0625            # ugv/base_link sits on the axle line, wheel_radius above ground
+  wheel_width: 0.07
+  wheelbase: 0.30                 # front-rear axle distance
+  track: 0.36                     # left-right wheel centre distance
+  wheel_mass: 0.3
+  chassis: {length: 0.40, width: 0.26, height: 0.12, z: 0.05, mass: 5.0}   # z: centre above base_link
+  landing_pad: {size_x: 0.5, size_y: 0.5, thickness: 0.01, top_height: 0.25, mass: 0.4}  # top_height above ground
+  # ArUco marker printed on the pad (meshes/landing_pad.png, regenerate with gen_pad_mesh.py).
+  # Marker frame (OpenCV): x = -y_ugv, y = +x_ugv, z = up, origin = pad top centre.
+  aruco: {dictionary: DICT_4X4_50, id: 7, size: 0.30, quiet_zone: 0.40}   # size = black outer edge [m]
+  camera:                          # D435 on the front, looking forward
+    x: 0.22                        # forward of base_link
+    y: 0.0
+    height: 0.30                   # optical centre above the ground
+    pitch_deg: 0.0
+  max_wheel_speed: 1.0             # m/s, diff-drive limit
+  odom_rate: 50.0
+
+drone:
+  name: drone
+  # S500 class quadrotor in X configuration
+  mass: 1.5                       # total incl. arms/legs/rotors/sensors
+  arm_diagonal: 0.50              # motor-to-motor diagonal
+  body: {size_x: 0.18, size_y: 0.18, size_z: 0.06}
+  leg_height: 0.12                # skid bottom is body_bottom - leg_height
+  rotor_radius: 0.127             # 10" props
+  rotor_z: 0.04                   # rotor plane above base_link
+  camera:                          # D435iF under the body
+    x: 0.06
+    y: 0.0
+    z: -0.06
+    pitch_deg: 90.0               # default straight down; override with drone_cam_pitch_deg
+  rangefinder: {x: -0.05, y: 0.0, z: -0.04, max_range: 10.0, min_range: 0.05, rate: 20.0}
+  imu_rate: 200.0
+  baro_rate: 50.0
+  # MulticopterMotorModel / MulticopterVelocityControl (X3 example values, max speed raised for 1.5 kg)
+  motor_constant: 8.54858e-06
+  moment_constant: 0.016
+  max_rot_velocity: 1000.0
+  velocity_gain: [2.7, 2.7, 2.7]
+  attitude_gain: [2.0, 3.0, 0.15]
+  angular_rate_gain: [0.4, 0.52, 0.18]
+  max_linear_acceleration: [1.0, 1.0, 1.0]
+
+# T0: pose of drone/base_link expressed in ugv/base_link while the drone sits on the
+# landing pad. Used for the drone spawn pose and as the initial guess of the
+# UGV-map -> UAV-map registration.
+#   z = pad top above base_link (0.25 - 0.0625 = 0.1875)
+#     + drone base_link above its skids (body_z/2 + leg_height = 0.15)
+#     + 0.005 spawn clearance
+landing_pad_offset: {x: 0.0, y: 0.0, z: 0.3425, yaw: 0.0}
+
+# Shared Intel RealSense D435 (color stream) simulation parameters
+d435:
+  width: 640
+  height: 480
+  rate: 30.0
+  hfov: 1.211                     # 69.4 deg (colour)
+  near: 0.2
+  far: 10.0                       # depth range (D435 ~10 m)
+  color_far: 100.0                # the colour image is not range limited
+  depth_noise_stddev: 0.01        # gaussian, m
+  imu_rate: 200.0                 # D435i/D435iF internal IMU
+  baseline: 0.05                  # only used for the visual body size
+
+ground_truth:
+  rate: 50.0                      # gz OdometryPublisher rate
+
+sim:
+  joint_state_rate: 50.0          # gz JointStatePublisher rate (default would be every physics step = 1 kHz)

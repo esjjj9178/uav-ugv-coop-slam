@@ -1,0 +1,136 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+    Property Tree Widget:
+      Expanded: ~
+      Splitter Ratio: 0.6
+    Tree Height: 500
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Class: rviz_default_plugins/Grid
+      Name: Grid
+      Enabled: true
+      Reference Frame: merge_view
+      Cell Size: 1
+      Plane Cell Count: 70
+      Color: 160; 160; 164
+      Alpha: 0.25
+      Value: true
+    - Class: rviz_default_plugins/PointCloud2
+      Name: UGV map
+      Enabled: true
+      Topic:
+        Value: /merge/ugv_rgb
+        Depth: 1
+        Durability Policy: Transient Local
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+      Color Transformer: RGB8
+      Style: Points
+      Size (Pixels): 2
+      Alpha: 1
+      Decay Time: 0
+      Use Fixed Frame: true
+      Value: true
+    - Class: rviz_default_plugins/PointCloud2
+      Name: Drone map
+      Enabled: true
+      Topic:
+        Value: /merge/drone_rgb
+        Depth: 1
+        Durability Policy: Transient Local
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+      Color Transformer: RGB8
+      Style: Points
+      Size (Pixels): 2
+      Alpha: 1
+      Decay Time: 0
+      Use Fixed Frame: true
+      Value: true
+    - Class: rviz_default_plugins/PointCloud2
+      Name: "Merged - UGV (orange)"
+      Enabled: true
+      Topic:
+        Value: /merge/ugv_merged
+        Depth: 1
+        Durability Policy: Transient Local
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+      Color Transformer: RGB8
+      Style: Points
+      Size (Pixels): 2
+      Alpha: 1
+      Decay Time: 0
+      Use Fixed Frame: true
+      Value: true
+    - Class: rviz_default_plugins/PointCloud2
+      Name: "Merged - drone (blue)"
+      Enabled: true
+      Topic:
+        Value: /merge/drone_merged
+        Depth: 1
+        Durability Policy: Transient Local
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+      Color Transformer: RGB8
+      Style: Points
+      Size (Pixels): 2
+      Alpha: 1
+      Decay Time: 0
+      Use Fixed Frame: true
+      Value: true
+    - Class: rviz_default_plugins/MarkerArray
+      Name: Labels and trajectories
+      Enabled: true
+      Topic:
+        Value: /merge/markers
+        Depth: 1
+        Durability Policy: Transient Local
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+      Value: true
+    - Class: rviz_default_plugins/TF
+      Name: TF
+      Enabled: false
+      Value: false
+  Enabled: true
+  Global Options:
+    Background Color: 40; 40; 44
+    Fixed Frame: merge_view
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz_default_plugins/Interact
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/FocusCamera
+    - Class: rviz_default_plugins/Measure
+  Transformation:
+    Current:
+      Class: rviz_default_plugins/TF
+  Value: true
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+      Name: Current View
+      Target Frame: merge_view
+      Focal Point:
+        X: 8
+        Y: 6
+        Z: 0
+      Distance: 75
+      Pitch: 0.8
+      Yaw: 3.14159
+      Near Clip Distance: 0.01
+      Value: Orbit (rviz)
+    Saved: ~
+Window Geometry:
+  Displays:
+    collapsed: false
+  Height: 1000
+  Width: 1600
+  X: 0
+  Y: 0
+  Hide Left Dock: false
+  Hide Right Dock: true

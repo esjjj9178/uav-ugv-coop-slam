@@ -1,0 +1,38 @@
+# Per-robot RTAB-Map from a couv_sim_robots bag (slam_from_bag.launch.py / run_slam.sh).
+# Each robot gets its own rgbd_odometry + rtabmap with separate frames, so the two maps are
+# built independently, exactly as on the real robots:
+#   <robot>/map -> <robot>/vo_odom -> <robot>/base_link
+# The bag's /tf is not replayed (it holds the wheel-odometry and ground-truth trees);
+# robot_state_publisher provides the static sensor frames from the couv_sim_robots URDFs.
+
+playback_rate: 0.5            # bag play rate (RTAB-Map for two 30 Hz RGB-D streams on a laptop CPU)
+shutdown_delay: 8.0           # [s] wait after the bag ends so rtabmap can store the database
+
+robots: [ugv, drone]
+
+# Topics replayed from the bag (compressed images are restored to raw with image_transport republish)
+play_topics:
+  - /{ns}/camera/color/image_raw/compressed
+  - /{ns}/camera/depth/image_rect_raw/compressedDepth
+  - /{ns}/camera/color/camera_info
+
+odometry:                     # rtabmap_odom/rgbd_odometry parameters (RTAB-Map params are strings)
+  Odom/Strategy: "0"          # frame-to-map
+  Odom/ResetCountdown: "1"    # re-initialise after a failure (the drone starts with the pad below the near clip)
+  Vis/MinInliers: "15"
+  Vis/MaxDepth: "8.0"
+
+slam:                         # rtabmap_slam/rtabmap parameters
+  Rtabmap/DetectionRate: "1"  # [Hz] on message stamps (sim time), not wall time
+  RGBD/LinearUpdate: "0.1"
+  RGBD/AngularUpdate: "0.1"
+  Mem/IncrementalMemory: "true"
+  Mem/NotLinkedNodesKept: "false"  # do not store frames skipped by Linear/AngularUpdate (hovering, waiting)
+  Mem/SaveDepth16Format: "true"    # depth as 16-bit mm instead of 32-bit float
+  Grid/FromDepth: "false"
+  Vis/MinInliers: "15"
+
+export:                       # rtabmap-export of the assembled clouds
+  voxel: 0.03
+  decimation: 2
+  max_range: 8.0

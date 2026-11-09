@@ -1,0 +1,43 @@
+# UGV-map <- drone-map registration (merge_viz.py).
+#
+# Initial guess: T0 (couv_sim_robots config/frames.yaml `landing_pad_offset`, drone/base_link in
+# ugv/base_link on the pad). The drone VO can only start once the pad is beyond the D435 near clip,
+# i.e. after a short climb, so its map origin sits above the pad. `climb_correction: rangefinder`
+# adds the climb measured by the downward rangefinder (onboard data, no ground truth) to T0.z.
+# Ground truth from the bag is used only to report the error of every step.
+
+climb_correction: rangefinder   # rangefinder | none
+perturbation: {x: 0.0, y: 0.0, z: 0.0, yaw_deg: 0.0}   # added to the initial guess (robustness tests)
+
+icp:                            # point-to-plane ICP, drone map (source) -> UGV map (target)
+  voxel: 0.05                   # [m] downsampling of both maps for ICP
+  normal_k: 12                  # neighbours for target normals
+  max_iterations: 40
+  max_corr_dist: [0.40, 0.20, 0.10]   # [m] schedule, each used for a third of the iterations
+  trim_ratio: 0.85              # keep the best fraction of correspondences
+  min_planarity: 0.6            # use target points whose neighbourhood is planar (edges/noise rejected)
+  converge_translation: 0.0005  # [m]
+  converge_rotation_deg: 0.01
+  dof: 6                        # 6, or 4 = yaw + translation only (gravity from the IMU)
+  source_radius: 0.0            # [m] use only drone-map points this close to its origin (0 = all)
+  source_max_z: 2.5             # [m] drop drone points the UGV cannot see (roof top, rooftop objects)
+  balance_normals: false        # equal total weight for horizontal and vertical surfaces
+  sigma_point: 0.03             # [m] point-to-plane residual std
+  prior_sigma_t: 0.10           # [m] T0 prior (0 = no prior)
+  prior_sigma_rot_deg: 2.0
+
+# ICP is adopted only if it moves the initial guess by less than the T0 uncertainty;
+# otherwise the initial guess is kept (no ground truth involved in this decision).
+acceptance:
+  max_correction_t: 0.10        # [m]
+  max_correction_rot_deg: 2.0
+
+viz:
+  step_period: 0.7              # [s] per animation step in RViz
+  hold_final: 6.0               # [s] pause on the result before looping
+  loop: true
+  panel_offset: 24.0            # [m] side-by-side panels: UGV map at +y, drone map at -y, merged in the middle
+  cloud_voxel: 0.03             # [m] downsampling of the published clouds
+  moving_cloud_voxel: 0.06      # [m] the drone cloud in the merged view (re-sent every step)
+  ugv_color: [235, 104, 52]     # merged view colours (UGV orange, drone blue)
+  drone_color: [42, 120, 214]

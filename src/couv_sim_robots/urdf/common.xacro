@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- frames.yaml is the single source of numbers; robot files read it through `cfg`. -->
+  <xacro:arg name="frames_yaml" default="$(find couv_sim_robots)/config/frames.yaml"/>
+  <xacro:property name="cfg" value="${xacro.load_yaml('$(arg frames_yaml)')}"/>
+
+  <xacro:macro name="box_inertial" params="m x y z xyz:='0 0 0'">
+    <inertial>
+      <origin xyz="${xyz}" rpy="0 0 0"/>
+      <mass value="${m}"/>
+      <inertia ixx="${m*(y*y+z*z)/12}" ixy="0" ixz="0" iyy="${m*(x*x+z*z)/12}" iyz="0" izz="${m*(x*x+y*y)/12}"/>
+    </inertial>
+  </xacro:macro>
+
+  <!-- solid cylinder whose axis is the link z axis -->
+  <xacro:macro name="cylinder_inertial" params="m r h">
+    <inertial>
+      <mass value="${m}"/>
+      <inertia ixx="${m*(3*r*r+h*h)/12}" ixy="0" ixz="0" iyy="${m*(3*r*r+h*h)/12}" iyz="0" izz="${m*r*r/2}"/>
+    </inertial>
+  </xacro:macro>
+
+  <!-- Ground-truth odometry (world pose of the model = pose of base_link). Topic only, no TF. -->
+  <xacro:macro name="ground_truth" params="ns">
+    <gazebo>
+      <plugin filename="gz-sim-odometry-publisher-system" name="gz::sim::systems::OdometryPublisher">
+        <odom_frame>${cfg.world.map_frame}</odom_frame>
+        <robot_base_frame>${ns}/base_link</robot_base_frame>
+        <odom_topic>/${ns}/ground_truth/odom</odom_topic>
+        <odom_covariance_topic>/${ns}/ground_truth/odom_with_covariance</odom_covariance_topic>
+        <tf_topic>/${ns}/ground_truth/gz_tf</tf_topic>
+        <odom_publish_frequency>${cfg.ground_truth.rate}</odom_publish_frequency>
+        <dimensions>3</dimensions>
+      </plugin>
+      <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">
+        <topic>/${ns}/joint_states</topic>
+        <update_rate>${cfg.sim.joint_state_rate}</update_rate>
+      </plugin>
+    </gazebo>
+  </xacro:macro>
+
+</robot>

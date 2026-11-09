@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <model name="lm_lshape">
+    <static>true</static>
+    <link name="link">
+      <collision name="arm_x_collision">
+        <pose>0 -0.5 0.6 0 0 0</pose>
+        <geometry><box><size>1.6 0.6 1.2</size></box></geometry>
+      </collision>
+      <visual name="arm_x_visual">
+        <pose>0 -0.5 0.6 0 0 0</pose>
+        <geometry><box><size>1.6 0.6 1.2</size></box></geometry>
+        <cast_shadows>true</cast_shadows>
+        <material>
+          <ambient>0.5029 0.5052 0.4841 1</ambient>
+          <diffuse>0.8382 0.8421 0.8069 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://lm_lshape/materials/textures/lm_lshape.png</albedo_map>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+      <collision name="arm_y_collision">
+        <pose>-0.5 0.3 0.6 0 0 0</pose>
+        <geometry><box><size>0.6 1 1.2</size></box></geometry>
+      </collision>
+      <visual name="arm_y_visual">
+        <pose>-0.5 0.3 0.6 0 0 0</pose>
+        <geometry><box><size>0.6 1 1.2</size></box></geometry>
+        <cast_shadows>true</cast_shadows>
+        <material>
+          <ambient>0.5029 0.5052 0.4841 1</ambient>
+          <diffuse>0.8382 0.8421 0.8069 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://lm_lshape/materials/textures/lm_lshape.png</albedo_map>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>

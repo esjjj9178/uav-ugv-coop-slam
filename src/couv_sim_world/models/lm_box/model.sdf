@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <model name="lm_box">
+    <static>true</static>
+    <link name="link">
+      <collision name="body_collision">
+        <pose>0 0 0.75 0 0 0</pose>
+        <geometry><box><size>1 1 1.5</size></box></geometry>
+      </collision>
+      <visual name="body_visual">
+        <pose>0 0 0.75 0 0 0</pose>
+        <geometry><box><size>1 1 1.5</size></box></geometry>
+        <cast_shadows>true</cast_shadows>
+        <material>
+          <ambient>0.5417 0.5085 0.4985 1</ambient>
+          <diffuse>0.9028 0.8475 0.8308 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://lm_box/materials/textures/lm_box.png</albedo_map>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>

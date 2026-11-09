@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<!--
+  Drone drive / flight-controller block: Gazebo built-in MulticopterMotorModel x4 +
+  MulticopterVelocityControl (like the gz-sim X3 example).
+
+  Interface (bridged to ROS):  /<ns>/cmd_vel (Twist, body frame)  /<ns>/enable (Bool)
+
+  This is the only file to replace when moving to PX4 SITL: swap this macro for one
+  that loads the PX4 motor models / gz_bridge and keep the airframe, sensors and
+  frames in drone.urdf.xacro unchanged. Rotor joints are named rotor_<i>_joint.
+-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="drone_drive_mc_velocity" params="ns d">
+    <xacro:macro name="motor" params="i dir">
+      <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
+        <robotNamespace>${ns}</robotNamespace>
+        <jointName>rotor_${i}_joint</jointName>
+        <linkName>rotor_${i}</linkName>
+        <turningDirection>${dir}</turningDirection>
+        <timeConstantUp>0.0125</timeConstantUp>
+        <timeConstantDown>0.025</timeConstantDown>
+        <maxRotVelocity>${d.max_rot_velocity}</maxRotVelocity>
+        <motorConstant>${d.motor_constant}</motorConstant>
+        <momentConstant>${d.moment_constant}</momentConstant>
+        <commandSubTopic>command/motor_speed</commandSubTopic>
+        <actuator_number>${i}</actuator_number>
+        <rotorDragCoefficient>8.06428e-05</rotorDragCoefficient>
+        <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+        <motorSpeedPubTopic>motor_speed/${i}</motorSpeedPubTopic>
+        <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+        <motorType>velocity</motorType>
+      </plugin>
+    </xacro:macro>
+    <xacro:macro name="rotor_cfg" params="i dir">
+      <rotor>
+        <jointName>rotor_${i}_joint</jointName>
+        <forceConstant>${d.motor_constant}</forceConstant>
+        <momentConstant>${d.moment_constant}</momentConstant>
+        <direction>${dir}</direction>
+      </rotor>
+    </xacro:macro>
+
+    <gazebo>
+      <xacro:motor i="0" dir="ccw"/>
+      <xacro:motor i="1" dir="ccw"/>
+      <xacro:motor i="2" dir="cw"/>
+      <xacro:motor i="3" dir="cw"/>
+      <plugin filename="gz-sim-multicopter-control-system" name="gz::sim::systems::MulticopterVelocityControl">
+        <robotNamespace>${ns}</robotNamespace>
+        <commandSubTopic>cmd_vel</commandSubTopic>
+        <enableSubTopic>enable</enableSubTopic>
+        <motorControlPubTopic>command/motor_speed</motorControlPubTopic>
+        <comLinkName>base_link</comLinkName>
+        <velocityGain>${' '.join(str(v) for v in d.velocity_gain)}</velocityGain>
+        <attitudeGain>${' '.join(str(v) for v in d.attitude_gain)}</attitudeGain>
+        <angularRateGain>${' '.join(str(v) for v in d.angular_rate_gain)}</angularRateGain>
+        <maximumLinearAcceleration>${' '.join(str(v) for v in d.max_linear_acceleration)}</maximumLinearAcceleration>
+        <rotorConfiguration>
+          <xacro:rotor_cfg i="0" dir="1"/>
+          <xacro:rotor_cfg i="1" dir="1"/>
+          <xacro:rotor_cfg i="2" dir="-1"/>
+          <xacro:rotor_cfg i="3" dir="-1"/>
+        </rotorConfiguration>
+      </plugin>
+    </gazebo>
+  </xacro:macro>
+
+</robot>

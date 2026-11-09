@@ -1,0 +1,211 @@
+<?xml version="1.0"?>
+<!--
+  S500-class quadrotor (X configuration) with a downward D435iF, IMU, barometer and a
+  1-beam downward rangefinder. Numbers come from config/frames.yaml (`drone`, `d435`).
+  Link names are unprefixed; robot_state_publisher adds the `drone/` frame_prefix.
+  base_link = body centre; the skids are body_z/2 + leg_height below it.
+  The flight-controller block lives in drone_drive_mc_velocity.xacro (swap for PX4 later).
+-->
+<robot name="drone" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:include filename="$(find couv_sim_robots)/urdf/common.xacro"/>
+  <xacro:include filename="$(find couv_sim_robots)/urdf/d435.xacro"/>
+  <xacro:include filename="$(find couv_sim_robots)/urdf/drone_drive_mc_velocity.xacro"/>
+
+  <xacro:arg name="cam_pitch_deg" default=""/>
+  <xacro:arg name="depth_noise_stddev" default=""/>
+
+  <xacro:property name="d" value="${cfg.drone}"/>
+  <xacro:property name="cam" value="${cfg.d435}"/>
+  <xacro:property name="ns" value="${d.name}"/>
+  <xacro:property name="cam_pitch_deg" value="${d.camera.pitch_deg if '$(arg cam_pitch_deg)' == '' else float('$(arg cam_pitch_deg)')}"/>
+  <xacro:property name="depth_noise" value="${cam.depth_noise_stddev if '$(arg depth_noise_stddev)' == '' else float('$(arg depth_noise_stddev)')}"/>
+  <xacro:property name="b" value="${d.body}"/>
+  <xacro:property name="arm" value="${d.arm_diagonal/2}"/>
+  <xacro:property name="rxy" value="${arm/sqrt(2)}"/>
+  <xacro:property name="rotor_mass" value="0.025"/>
+  <xacro:property name="skid_mass" value="0.05"/>
+  <xacro:property name="body_mass" value="${d.mass - 4*rotor_mass - 2*skid_mass - 0.072}"/>
+  <xacro:property name="skid_z" value="${-b.size_z/2 - d.leg_height}"/>
+
+  <material name="drone_body"><color rgba="0.15 0.15 0.17 1"/></material>
+  <material name="drone_arm"><color rgba="0.2 0.35 0.75 1"/></material>
+  <material name="drone_front"><color rgba="0.9 0.2 0.15 1"/></material>
+  <material name="drone_prop"><color rgba="0.8 0.8 0.8 0.6"/></material>
+
+  <link name="base_link"/>
+
+  <!-- body + arms carry the airframe mass/inertia (lumped into base_link by the SDF converter) -->
+  <joint name="body_joint" type="fixed">
+    <parent link="base_link"/><child link="body"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+  <link name="body">
+    <visual>
+      <geometry><box size="${b.size_x} ${b.size_y} ${b.size_z}"/></geometry>
+      <material name="drone_body"/>
+    </visual>
+    <visual>
+      <origin xyz="0 0 ${b.size_z/2 + 0.005}" rpy="0 0 ${pi/4}"/>
+      <geometry><box size="${d.arm_diagonal} 0.03 0.012"/></geometry>
+      <material name="drone_arm"/>
+    </visual>
+    <visual>
+      <origin xyz="0 0 ${b.size_z/2 + 0.005}" rpy="0 0 ${-pi/4}"/>
+      <geometry><box size="${d.arm_diagonal} 0.03 0.012"/></geometry>
+      <material name="drone_arm"/>
+    </visual>
+    <visual>
+      <origin xyz="${b.size_x/2} 0 0" rpy="0 0 0"/>
+      <geometry><box size="0.01 0.06 0.02"/></geometry>
+      <material name="drone_front"/>
+    </visual>
+    <collision>
+      <geometry><box size="${b.size_x} ${b.size_y} ${b.size_z}"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="${body_mass}"/>
+      <!-- body box + mass spread to the motors along the arms -->
+      <inertia ixx="${body_mass*(0.5*rxy*rxy + (b.size_y**2 + b.size_z**2)/12/2)}" ixy="0" ixz="0"
+               iyy="${body_mass*(0.5*rxy*rxy + (b.size_x**2 + b.size_z**2)/12/2)}" iyz="0"
+               izz="${body_mass*(rxy*rxy + (b.size_x**2 + b.size_y**2)/12/2)}"/>
+    </inertial>
+  </link>
+
+  <!-- landing skids -->
+  <xacro:macro name="skid" params="name y">
+    <joint name="${name}_joint" type="fixed">
+      <parent link="base_link"/><child link="${name}"/>
+      <origin xyz="0 ${y} ${skid_z + 0.01}" rpy="0 0 0"/>
+    </joint>
+    <link name="${name}">
+      <visual>
+        <geometry><box size="0.26 0.02 0.02"/></geometry>
+        <material name="drone_body"/>
+      </visual>
+      <visual>
+        <origin xyz="0 ${-0.02 if y > 0 else 0.02} ${d.leg_height/2}" rpy="${-0.35 if y > 0 else 0.35} 0 0"/>
+        <geometry><box size="0.015 0.012 ${d.leg_height}"/></geometry>
+        <material name="drone_body"/>
+      </visual>
+      <collision>
+        <geometry><box size="0.26 0.02 0.02"/></geometry>
+      </collision>
+      <xacro:box_inertial m="${skid_mass}" x="0.26" y="0.02" z="0.02"/>
+    </link>
+    <gazebo reference="${name}">
+      <mu1>1.0</mu1>
+      <mu2>1.0</mu2>
+    </gazebo>
+  </xacro:macro>
+  <xacro:skid name="skid_left" y="${b.size_y/2}"/>
+  <xacro:skid name="skid_right" y="${-b.size_y/2}"/>
+
+  <!-- rotors: 0 front-right ccw, 1 rear-left ccw, 2 front-left cw, 3 rear-right cw -->
+  <xacro:macro name="rotor" params="i x y">
+    <joint name="rotor_${i}_joint" type="continuous">
+      <parent link="base_link"/><child link="rotor_${i}"/>
+      <origin xyz="${x} ${y} ${d.rotor_z}" rpy="0 0 0"/>
+      <axis xyz="0 0 1"/>
+    </joint>
+    <link name="rotor_${i}">
+      <visual>
+        <geometry><box size="${2*d.rotor_radius} 0.022 0.004"/></geometry>
+        <material name="drone_prop"/>
+      </visual>
+      <visual>
+        <origin xyz="0 0 -0.015" rpy="0 0 0"/>
+        <geometry><cylinder radius="0.014" length="0.025"/></geometry>
+        <material name="drone_body"/>
+      </visual>
+      <inertial>
+        <mass value="${rotor_mass}"/>
+        <inertia ixx="1e-5" ixy="0" ixz="0" iyy="${rotor_mass*(2*d.rotor_radius)**2/12}" iyz="0"
+                 izz="${rotor_mass*(2*d.rotor_radius)**2/12}"/>
+      </inertial>
+    </link>
+  </xacro:macro>
+  <xacro:rotor i="0" x="${rxy}" y="${-rxy}"/>
+  <xacro:rotor i="1" x="${-rxy}" y="${rxy}"/>
+  <xacro:rotor i="2" x="${rxy}" y="${rxy}"/>
+  <xacro:rotor i="3" x="${-rxy}" y="${-rxy}"/>
+
+  <!-- flight IMU + barometer at the body centre -->
+  <joint name="imu_joint" type="fixed">
+    <parent link="base_link"/><child link="imu_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+  <link name="imu_link"/>
+  <gazebo reference="imu_link">
+    <sensor name="${ns}_imu" type="imu">
+      <always_on>true</always_on>
+      <update_rate>${d.imu_rate}</update_rate>
+      <topic>/${ns}/imu</topic>
+      <gz_frame_id>${ns}/imu_link</gz_frame_id>
+      <imu>
+        <angular_velocity>
+          <x><noise type="gaussian"><mean>0</mean><stddev>0.0015</stddev></noise></x>
+          <y><noise type="gaussian"><mean>0</mean><stddev>0.0015</stddev></noise></y>
+          <z><noise type="gaussian"><mean>0</mean><stddev>0.0015</stddev></noise></z>
+        </angular_velocity>
+        <linear_acceleration>
+          <x><noise type="gaussian"><mean>0</mean><stddev>0.015</stddev></noise></x>
+          <y><noise type="gaussian"><mean>0</mean><stddev>0.015</stddev></noise></y>
+          <z><noise type="gaussian"><mean>0</mean><stddev>0.015</stddev></noise></z>
+        </linear_acceleration>
+      </imu>
+    </sensor>
+    <sensor name="${ns}_baro" type="air_pressure">
+      <always_on>true</always_on>
+      <update_rate>${d.baro_rate}</update_rate>
+      <topic>/${ns}/air_pressure</topic>
+      <gz_frame_id>${ns}/imu_link</gz_frame_id>
+      <air_pressure>
+        <reference_altitude>0</reference_altitude>
+        <pressure><noise type="gaussian"><mean>0</mean><stddev>3.0</stddev></noise></pressure>
+      </air_pressure>
+    </sensor>
+  </gazebo>
+
+  <!-- 1-beam downward rangefinder (gpu_lidar); link x axis points down -->
+  <xacro:property name="rf" value="${d.rangefinder}"/>
+  <joint name="rangefinder_joint" type="fixed">
+    <parent link="base_link"/><child link="rangefinder_link"/>
+    <origin xyz="${rf.x} ${rf.y} ${rf.z}" rpy="0 ${pi/2} 0"/>
+  </joint>
+  <link name="rangefinder_link">
+    <visual>
+      <geometry><box size="0.01 0.02 0.03"/></geometry>
+      <material name="drone_front"/>
+    </visual>
+  </link>
+  <gazebo reference="rangefinder_link">
+    <sensor name="${ns}_rangefinder" type="gpu_lidar">
+      <always_on>true</always_on>
+      <update_rate>${rf.rate}</update_rate>
+      <topic>/${ns}/rangefinder</topic>
+      <gz_frame_id>${ns}/rangefinder_link</gz_frame_id>
+      <lidar>
+        <scan>
+          <horizontal><samples>1</samples><resolution>1</resolution><min_angle>0</min_angle><max_angle>0</max_angle></horizontal>
+          <vertical><samples>1</samples><resolution>1</resolution><min_angle>0</min_angle><max_angle>0</max_angle></vertical>
+        </scan>
+        <range><min>${rf.min_range}</min><max>${rf.max_range}</max><resolution>0.01</resolution></range>
+        <noise><type>gaussian</type><mean>0</mean><stddev>0.01</stddev></noise>
+      </lidar>
+    </sensor>
+  </gazebo>
+
+  <!-- downward (default) D435iF; drone_cam_pitch_deg = 90 down, 0 forward -->
+  <xacro:d435 parent="base_link" ns="${ns}" frame_prefix="${ns}/"
+              xyz="${d.camera.x} ${d.camera.y} ${d.camera.z}"
+              rpy="0 ${radians(cam_pitch_deg)} 0"
+              width="${cam.width}" height="${cam.height}" rate="${cam.rate}" hfov="${cam.hfov}"
+              near="${cam.near}" far="${cam.far}" color_far="${cam.color_far}" depth_noise_stddev="${depth_noise}" imu_rate="${cam.imu_rate}"/>
+
+  <xacro:drone_drive_mc_velocity ns="${ns}" d="${d}"/>
+  <xacro:ground_truth ns="${ns}"/>
+  <gazebo>
+    <!-- the canopy_world file does not load the barometer system; the drone brings it -->
+    <plugin filename="gz-sim-air-pressure-system" name="gz::sim::systems::AirPressure"/>
+  </gazebo>
+</robot>

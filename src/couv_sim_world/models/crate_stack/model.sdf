@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <model name="crate_stack">
+    <static>true</static>
+    <link name="link">
+      <collision name="body_collision">
+        <pose>0 0 0.5 0 0 0</pose>
+        <geometry><box><size>0.8 0.8 1</size></box></geometry>
+      </collision>
+      <visual name="body_visual">
+        <pose>0 0 0.5 0 0 0</pose>
+        <geometry><box><size>0.8 0.8 1</size></box></geometry>
+        <cast_shadows>true</cast_shadows>
+        <material>
+          <ambient>0.5354 0.5066 0.4881 1</ambient>
+          <diffuse>0.8923 0.8443 0.8135 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://crate_stack/materials/textures/crate.png</albedo_map>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>

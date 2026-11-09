@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>couv_sim_robots</name>
+  <version>0.1.0</version>
+  <description>UGV (Leo Rover sized) and S500-class drone with simulated RealSense D435 for canopy_world (Gazebo Harmonic), ROS bridge, test mission and recording.</description>
+  <maintainer email="kmh9178@inha.edu">eom</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>ament_cmake_python</buildtool_depend>
+
+  <exec_depend>couv_sim_world</exec_depend>
+  <exec_depend>ros_gz_sim</exec_depend>
+  <exec_depend>ros_gz_bridge</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>xacro</exec_depend>
+  <exec_depend>rviz2</exec_depend>
+  <exec_depend>depth_image_proc</exec_depend>
+  <exec_depend>rclcpp_components</exec_depend>
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>python3-yaml</exec_depend>
+  <exec_depend>python3-numpy</exec_depend>
+  <exec_depend>ros2bag</exec_depend>
+  <exec_depend>rosbag2_storage_mcap</exec_depend>
+  <exec_depend>tf2_tools</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

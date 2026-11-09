@@ -1,0 +1,284 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <model name="floor">
+    <static>true</static>
+    <link name="link">
+      <collision name="ground_collision">
+        <geometry><plane><normal>0 0 1</normal><size>20 20</size></plane></geometry>
+        <surface><friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction></surface>
+      </collision>
+      <visual name="tile_00_visual">
+        <pose>-7.5 -7.5 -0.01 0 0 0</pose>
+        <geometry><box><size>5 5 0.02</size></box></geometry>
+        <cast_shadows>true</cast_shadows>
+        <material>
+          <ambient>0.4914 0.4907 0.4877 1</ambient>
+          <diffuse>0.819 0.8179 0.8129 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://floor/materials/textures/floor_tile_00.png</albedo_map>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+      <visual name="tile_01_visual">
+        <pose>-2.5 -7.5 -0.01 0 0 0</pose>
+        <geometry><box><size>5 5 0.02</size></box></geometry>
+        <cast_shadows>true</cast_shadows>
+        <material>
+          <ambient>0.5271 0.4975 0.4869 1</ambient>
+          <diffuse>0.8785 0.8292 0.8116 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://floor/materials/textures/floor_tile_01.png</albedo_map>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+      <visual name="tile_02_visual">
+        <pose>2.5 -7.5 -0.01 0 0 0</pose>
+        <geometry><box><size>5 5 0.02</size></box></geometry>
+        <cast_shadows>true</cast_shadows>
+        <material>
+          <ambient>0.4867 0.4856 0.4851 1</ambient>
+          <diffuse>0.8112 0.8093 0.8085 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://floor/materials/textures/floor_tile_02.png</albedo_map>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+      <visual name="tile_03_visual">
+        <pose>7.5 -7.5 -0.01 0 0 0</pose>
+        <geometry><box><size>5 5 0.02</size></box></geometry>
+        <cast_shadows>true</cast_shadows>
+        <material>
+          <ambient>0.515 0.5151 0.5172 1</ambient>
+          <diffuse>0.8583 0.8585 0.862 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://floor/materials/textures/floor_tile_03.png</albedo_map>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+      <visual name="tile_04_visual">
+        <pose>-7.5 -2.5 -0.01 0 0 0</pose>
+        <geometry><box><size>5 5 0.02</size></box></geometry>
+        <cast_shadows>true</cast_shadows>
+        <material>
+          <ambient>0.5329 0.5195 0.4946 1</ambient>
+          <diffuse>0.8881 0.8658 0.8244 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://floor/materials/textures/floor_tile_04.png</albedo_map>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+      <visual name="tile_05_visual">
+        <pose>-2.5 -2.5 -0.01 0 0 0</pose>
+        <geometry><box><size>5 5 0.02</size></box></geometry>
+        <cast_shadows>true</cast_shadows>
+        <material>
+          <ambient>0.4995 0.4942 0.493 1</ambient>
+          <diffuse>0.8325 0.8236 0.8216 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://floor/materials/textures/floor_tile_05.png</albedo_map>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+      <visual name="tile_06_visual">
+        <pose>2.5 -2.5 -0.01 0 0 0</pose>
+        <geometry><box><size>5 5 0.02</size></box></geometry>
+        <cast_shadows>true</cast_shadows>
+        <material>
+          <ambient>0.4986 0.4957 0.4915 1</ambient>
+          <diffuse>0.831 0.8262 0.8192 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://floor/materials/textures/floor_tile_06.png</albedo_map>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+      <visual name="tile_07_visual">
+        <pose>7.5 -2.5 -0.01 0 0 0</pose>
+        <geometry><box><size>5 5 0.02</size></box></geometry>
+        <cast_shadows>true</cast_shadows>
+        <material>
+          <ambient>0.4932 0.4948 0.4879 1</ambient>
+          <diffuse>0.822 0.8246 0.8131 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://floor/materials/textures/floor_tile_07.png</albedo_map>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+      <visual name="tile_08_visual">
+        <pose>-7.5 2.5 -0.01 0 0 0</pose>
+        <geometry><box><size>5 5 0.02</size></box></geometry>
+        <cast_shadows>true</cast_shadows>
+        <material>
+          <ambient>0.508 0.4984 0.4901 1</ambient>
+          <diffuse>0.8466 0.8307 0.8168 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://floor/materials/textures/floor_tile_08.png</albedo_map>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+      <visual name="tile_09_visual">
+        <pose>-2.5 2.5 -0.01 0 0 0</pose>
+        <geometry><box><size>5 5 0.02</size></box></geometry>
+        <cast_shadows>true</cast_shadows>
+        <material>
+          <ambient>0.4998 0.5116 0.5029 1</ambient>
+          <diffuse>0.8331 0.8526 0.8381 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://floor/materials/textures/floor_tile_09.png</albedo_map>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+      <visual name="tile_10_visual">
+        <pose>2.5 2.5 -0.01 0 0 0</pose>
+        <geometry><box><size>5 5 0.02</size></box></geometry>
+        <cast_shadows>true</cast_shadows>
+        <material>
+          <ambient>0.4918 0.4896 0.4875 1</ambient>
+          <diffuse>0.8196 0.816 0.8125 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://floor/materials/textures/floor_tile_10.png</albedo_map>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+      <visual name="tile_11_visual">
+        <pose>7.5 2.5 -0.01 0 0 0</pose>
+        <geometry><box><size>5 5 0.02</size></box></geometry>
+        <cast_shadows>true</cast_shadows>
+        <material>
+          <ambient>0.4961 0.4971 0.503 1</ambient>
+          <diffuse>0.8269 0.8286 0.8384 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://floor/materials/textures/floor_tile_11.png</albedo_map>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+      <visual name="tile_12_visual">
+        <pose>-7.5 7.5 -0.01 0 0 0</pose>
+        <geometry><box><size>5 5 0.02</size></box></geometry>
+        <cast_shadows>true</cast_shadows>
+        <material>
+          <ambient>0.5319 0.5008 0.4988 1</ambient>
+          <diffuse>0.8866 0.8346 0.8313 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://floor/materials/textures/floor_tile_12.png</albedo_map>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+      <visual name="tile_13_visual">
+        <pose>-2.5 7.5 -0.01 0 0 0</pose>
+        <geometry><box><size>5 5 0.02</size></box></geometry>
+        <cast_shadows>true</cast_shadows>
+        <material>
+          <ambient>0.4932 0.4934 0.4917 1</ambient>
+          <diffuse>0.8221 0.8223 0.8195 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://floor/materials/textures/floor_tile_13.png</albedo_map>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+      <visual name="tile_14_visual">
+        <pose>2.5 7.5 -0.01 0 0 0</pose>
+        <geometry><box><size>5 5 0.02</size></box></geometry>
+        <cast_shadows>true</cast_shadows>
+        <material>
+          <ambient>0.5044 0.5014 0.4899 1</ambient>
+          <diffuse>0.8407 0.8357 0.8165 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://floor/materials/textures/floor_tile_14.png</albedo_map>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+      <visual name="tile_15_visual">
+        <pose>7.5 7.5 -0.01 0 0 0</pose>
+        <geometry><box><size>5 5 0.02</size></box></geometry>
+        <cast_shadows>true</cast_shadows>
+        <material>
+          <ambient>0.5112 0.5088 0.5075 1</ambient>
+          <diffuse>0.852 0.848 0.8459 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://floor/materials/textures/floor_tile_15.png</albedo_map>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>

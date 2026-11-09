@@ -1,0 +1,62 @@
+# Serpentine (ㄹ) mission with ArUco captures at start and end, and landing (mission_aruco.py).
+# Simulation only: control uses the ground-truth pose; it is never a SLAM / registration input.
+# Coordinates in `map` (= canopy_world origin). Start the simulation with
+#   ugv_spawn_x:=-8 ugv_spawn_y:=-6.5 ugv_spawn_yaw:=0 drone_cam_pitch_deg:=45
+#
+#  y=+6.5   ┌──────────────────────────► goal (8, 6.5)
+#  y= 0     └◄──────── canopy ─────────┐
+#  y=-6.5   start (-8,-6.5) ───────────┘
+
+start_delay: 3.0               # [s sim] after both ground-truth topics are alive
+
+aruco_hover:                   # drone pose relative to the UGV while photographing the pad marker
+  behind: 1.2                  # [m] behind the UGV (the 45 deg camera then looks at the pad centre)
+  above_pad: 1.2               # [m] above the pad top
+  duration: 4.0                # [s] hover while aruco_detector averages the marker pose
+
+drone:
+  cruise_altitude: 5.0
+  max_speed: 0.5               # [m/s]
+  takeoff_speed: 0.3           # [m/s] slow near the UGV
+  landing_speed: 0.15          # [m/s]
+  max_accel: 0.4
+  max_yaw_rate: 0.2
+  yaw: 0.0                     # fixed heading (no rotation blur)
+  kp_xy: 0.6
+  kp_z: 0.8
+  kp_yaw: 0.8
+  tolerance: 0.15
+  landing_tolerance: 0.05      # [m] horizontal alignment over the pad before descending
+  ki: 0.3                      # integral gain, active within integral_zone of the target
+  integral_zone: 0.5           # [m]
+  integral_limit: 0.5          # [m s]
+  touchdown_margin: 0.03       # [m] motors off when base_link is this close to the seated height
+  waypoints:                   # cruise path (z = cruise_altitude); afterwards the drone waits for the UGV
+    - [-8.0, -6.5]
+    - [ 8.0, -6.5]
+    - [ 8.0,  0.0]
+    - [-8.0,  0.0]
+    - [-8.0,  6.5]
+    - [ 6.0,  6.5]
+
+ugv:
+  max_speed: 0.4
+  max_yaw_rate: 0.35
+  max_accel: 0.4
+  kp_lin: 0.8
+  kp_yaw: 1.5
+  slow_down_heading: 0.5
+  tolerance: 0.15
+  waypoints:                   # south row east, middle row west through the canopy, north row east
+    - [ 8.0, -6.5]
+    - [ 8.0,  0.0]
+    - [ 4.5,  0.0]
+    - [ 1.8,  0.4]
+    - [-1.5, -0.3]
+    - [-4.5,  0.0]
+    - [-8.0,  0.0]
+    - [-8.0,  6.5]
+    - [ 8.0,  6.5]
+
+done_hold: 2.0
+timeout: 900.0                 # [s sim]

@@ -1,0 +1,129 @@
+# ros_gz_bridge configuration for couv_sim_robots (both robots).
+# Camera topics follow realsense2_camera naming. The simulated depth is already
+# registered to the colour image (same optical frame), 32FC1 in metres.
+# .../camera/depth/color/points is NOT bridged: gz's rgbd cloud uses x-forward axes while
+# carrying the optical frame id, so sim.launch.py builds the cloud from depth + colour with
+# depth_image_proc (optical frame, like realsense2_camera).
+
+# simulation clock
+- ros_topic_name: "/clock"
+  gz_topic_name: "/clock"
+  ros_type_name: "rosgraph_msgs/msg/Clock"
+  gz_type_name: "gz.msgs.Clock"
+  direction: GZ_TO_ROS
+
+# ---------------------------------------------------------------- ugv
+- ros_topic_name: "/ugv/cmd_vel"
+  gz_topic_name: "/ugv/cmd_vel"
+  ros_type_name: "geometry_msgs/msg/Twist"
+  gz_type_name: "gz.msgs.Twist"
+  direction: ROS_TO_GZ
+# wheel odometry (diff-drive)
+- ros_topic_name: "/ugv/odom"
+  gz_topic_name: "/ugv/odom"
+  ros_type_name: "nav_msgs/msg/Odometry"
+  gz_type_name: "gz.msgs.Odometry"
+  direction: GZ_TO_ROS
+# ground truth, topic only (no TF)
+- ros_topic_name: "/ugv/ground_truth/odom"
+  gz_topic_name: "/ugv/ground_truth/odom"
+  ros_type_name: "nav_msgs/msg/Odometry"
+  gz_type_name: "gz.msgs.Odometry"
+  direction: GZ_TO_ROS
+- ros_topic_name: "/ugv/joint_states"
+  gz_topic_name: "/ugv/joint_states"
+  ros_type_name: "sensor_msgs/msg/JointState"
+  gz_type_name: "gz.msgs.Model"
+  direction: GZ_TO_ROS
+# D435
+- ros_topic_name: "/ugv/camera/color/image_raw"
+  gz_topic_name: "/ugv/camera/image"
+  ros_type_name: "sensor_msgs/msg/Image"
+  gz_type_name: "gz.msgs.Image"
+  direction: GZ_TO_ROS
+- ros_topic_name: "/ugv/camera/color/camera_info"
+  gz_topic_name: "/ugv/camera/camera_info"
+  ros_type_name: "sensor_msgs/msg/CameraInfo"
+  gz_type_name: "gz.msgs.CameraInfo"
+  direction: GZ_TO_ROS
+- ros_topic_name: "/ugv/camera/depth/image_rect_raw"
+  gz_topic_name: "/ugv/camera/depth_image"
+  ros_type_name: "sensor_msgs/msg/Image"
+  gz_type_name: "gz.msgs.Image"
+  direction: GZ_TO_ROS
+- ros_topic_name: "/ugv/camera/depth/camera_info"
+  gz_topic_name: "/ugv/camera/camera_info"
+  ros_type_name: "sensor_msgs/msg/CameraInfo"
+  gz_type_name: "gz.msgs.CameraInfo"
+  direction: GZ_TO_ROS
+- ros_topic_name: "/ugv/camera/imu"
+  gz_topic_name: "/ugv/camera/imu"
+  ros_type_name: "sensor_msgs/msg/Imu"
+  gz_type_name: "gz.msgs.IMU"
+  direction: GZ_TO_ROS
+
+# ---------------------------------------------------------------- drone
+- ros_topic_name: "/drone/cmd_vel"
+  gz_topic_name: "/drone/cmd_vel"
+  ros_type_name: "geometry_msgs/msg/Twist"
+  gz_type_name: "gz.msgs.Twist"
+  direction: ROS_TO_GZ
+# velocity controller on/off
+- ros_topic_name: "/drone/enable"
+  gz_topic_name: "/drone/enable"
+  ros_type_name: "std_msgs/msg/Bool"
+  gz_type_name: "gz.msgs.Boolean"
+  direction: ROS_TO_GZ
+- ros_topic_name: "/drone/imu"
+  gz_topic_name: "/drone/imu"
+  ros_type_name: "sensor_msgs/msg/Imu"
+  gz_type_name: "gz.msgs.IMU"
+  direction: GZ_TO_ROS
+- ros_topic_name: "/drone/air_pressure"
+  gz_topic_name: "/drone/air_pressure"
+  ros_type_name: "sensor_msgs/msg/FluidPressure"
+  gz_type_name: "gz.msgs.FluidPressure"
+  direction: GZ_TO_ROS
+# 1-beam downward range (ranges[0])
+- ros_topic_name: "/drone/rangefinder"
+  gz_topic_name: "/drone/rangefinder"
+  ros_type_name: "sensor_msgs/msg/LaserScan"
+  gz_type_name: "gz.msgs.LaserScan"
+  direction: GZ_TO_ROS
+# ground truth, topic only (no TF)
+- ros_topic_name: "/drone/ground_truth/odom"
+  gz_topic_name: "/drone/ground_truth/odom"
+  ros_type_name: "nav_msgs/msg/Odometry"
+  gz_type_name: "gz.msgs.Odometry"
+  direction: GZ_TO_ROS
+- ros_topic_name: "/drone/joint_states"
+  gz_topic_name: "/drone/joint_states"
+  ros_type_name: "sensor_msgs/msg/JointState"
+  gz_type_name: "gz.msgs.Model"
+  direction: GZ_TO_ROS
+# D435
+- ros_topic_name: "/drone/camera/color/image_raw"
+  gz_topic_name: "/drone/camera/image"
+  ros_type_name: "sensor_msgs/msg/Image"
+  gz_type_name: "gz.msgs.Image"
+  direction: GZ_TO_ROS
+- ros_topic_name: "/drone/camera/color/camera_info"
+  gz_topic_name: "/drone/camera/camera_info"
+  ros_type_name: "sensor_msgs/msg/CameraInfo"
+  gz_type_name: "gz.msgs.CameraInfo"
+  direction: GZ_TO_ROS
+- ros_topic_name: "/drone/camera/depth/image_rect_raw"
+  gz_topic_name: "/drone/camera/depth_image"
+  ros_type_name: "sensor_msgs/msg/Image"
+  gz_type_name: "gz.msgs.Image"
+  direction: GZ_TO_ROS
+- ros_topic_name: "/drone/camera/depth/camera_info"
+  gz_topic_name: "/drone/camera/camera_info"
+  ros_type_name: "sensor_msgs/msg/CameraInfo"
+  gz_type_name: "gz.msgs.CameraInfo"
+  direction: GZ_TO_ROS
+- ros_topic_name: "/drone/camera/imu"
+  gz_topic_name: "/drone/camera/imu"
+  ros_type_name: "sensor_msgs/msg/Imu"
+  gz_type_name: "gz.msgs.IMU"
+  direction: GZ_TO_ROS
